@@ -28,7 +28,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-// import { authService } from "@/lib/auth";
+import { authService } from "@/services/auth";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -53,16 +53,16 @@ export default function LoginPage() {
     setIsLoading(true);
     
     try {
-    //   const user = await authService.login(data.email, data.password);
+      const user = await authService.login(data.email, data.password);
       
-    //   toast.success("Logged in successfully!");
+      toast.success("Logged in successfully!");
       
-    //   // Redirect based on user role
-    //   if (user.role === "admin") {
-    //     router.push("/admin/dashboard");
-    //   } else {
-    //     router.push("/vehicles");
-    //   }
+      // Redirect based on user role
+      if (user.role === "ADMIN") {
+        router.push("/admin/dashboard");
+      } else {
+        router.push("/vehicles");
+      }
     } catch (error) {
       toast.error("Invalid email or password");
     } finally {
@@ -132,8 +132,8 @@ export default function LoginPage() {
           </div>
           <div className="text-xs text-center text-muted-foreground">
             <p>Demo accounts:</p>
-            <p>Customer: john@example.com / password</p>
-            <p>Admin: admin@example.com / password</p>
+            <p>Customer: user@gmail.com / password</p>
+            <p>Admin: admin@gmail.com / password</p>
           </div>
         </CardFooter>
       </Card>

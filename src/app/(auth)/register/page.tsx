@@ -28,7 +28,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-// import { authService } from "@/lib/auth";
+import { authService } from "@/services/auth";
 
 const registerSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters" }),
