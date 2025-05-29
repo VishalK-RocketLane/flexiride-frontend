@@ -7,7 +7,6 @@ export interface Vehicle {
     model: string;
     type: VehicleType;
     pricePerDay: number;
-    advance: number;
     imageUrl: string;
 }
 

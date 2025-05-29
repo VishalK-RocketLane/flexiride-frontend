@@ -41,7 +41,7 @@ export function VehicleCard({ vehicle, onBookNow, startDate, endDate }: VehicleC
         <div className="relative h-48 overflow-hidden">
           <Image
             src={vehicle.imageUrl}
-            alt={vehicle.name}
+            alt={vehicle.model}
             fill
             className={`object-cover transition-transform duration-300 ${
               isHovered ? "scale-110" : "scale-100"
