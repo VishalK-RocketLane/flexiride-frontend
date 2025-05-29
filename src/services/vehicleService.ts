@@ -40,8 +40,8 @@ class VehicleService {
         types: filters.types || [],
         startPrice: filters.startPrice,
         endPrice: filters.endPrice,
-        startDate: filters.startDate || undefined,
-        endDate: filters.endDate || undefined
+        startDate: filters.startDate?.toISOString().split('T')[0] || undefined,
+        endDate: filters.endDate?.toISOString().split('T')[0] || undefined
       });
       return response.data;
     } catch (error) {

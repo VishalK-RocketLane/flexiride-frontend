@@ -40,6 +40,7 @@ export default function VehiclesPage() {
     // Fetch vehicles
     const fetchVehicles = async () => {
         try {
+            setFilteredVehicles([]);
             const vehicles = await vehicleService.filterVehicles(filters);
             setFilteredVehicles(vehicles);
 
@@ -62,30 +63,6 @@ export default function VehiclesPage() {
     useEffect(() => {
         fetchVehicles();
     }, [filters]);
-
-    const applyFilters = () => {
-        let result = [] as Vehicle[];
-
-        // Filter by price range
-        if (filters.startPrice !== undefined) {
-            result = result.filter(vehicle => vehicle.pricePerDay >= filters.startPrice!);
-        }
-        if (filters.endPrice !== undefined) {
-            result = result.filter(vehicle => vehicle.pricePerDay <= filters.endPrice!);
-        }
-
-        // Filter by vehicle types
-        if (filters.types && filters.types.length > 0) {
-            result = result.filter((vehicle) => filters.types?.includes(vehicle.type));
-        }
-
-        // Filter by brands
-        if (filters.brands && filters.brands.length > 0) {
-            result = result.filter((vehicle) => filters.brands?.includes(vehicle.brand));
-        }
-
-        setFilteredVehicles(result);
-    };
 
     const resetFilters = () => {
         setFilters({
@@ -113,11 +90,6 @@ export default function VehiclesPage() {
 
         toast.success(`Vehicle booked: ${vehicle.name}`);
     };
-
-    // Apply filters whenever they change
-    useState(() => {
-        applyFilters();
-    });
 
     return (
         <div className="container mx-auto">
@@ -148,7 +120,6 @@ export default function VehiclesPage() {
                                             onChange={(e) => {
                                                 const value = e.target.value ? Number(e.target.value) : undefined;
                                                 setFilters({ ...filters, startPrice: value });
-                                                applyFilters();
                                             }}
                                         />
                                         <Input
@@ -158,7 +129,6 @@ export default function VehiclesPage() {
                                             onChange={(e) => {
                                                 const value = e.target.value ? Number(e.target.value) : undefined;
                                                 setFilters({ ...filters, endPrice: value });
-                                                applyFilters();
                                             }}
                                         />
                                     </div>
@@ -218,8 +188,7 @@ export default function VehiclesPage() {
                                                         const updatedTypes = checked
                                                             ? [...(filters.types || []), type]
                                                             : filters.types?.filter((t) => t !== type) || [];
-                                                        setFilters({ ...filters, types: updatedTypes });
-                                                        applyFilters();
+                                                        setFilters({ ...filters, types: updatedTypes });;
                                                     }}
                                                 />
                                                 <label
@@ -245,8 +214,7 @@ export default function VehiclesPage() {
                                                         const updatedBrands = checked
                                                             ? [...(filters.brands || []), brand]
                                                             : filters.brands?.filter((b) => b !== brand) || [];
-                                                        setFilters({ ...filters, brands: updatedBrands });
-                                                        applyFilters();
+                                                        setFilters({ ...filters, brands: updatedBrands });;
                                                     }}
                                                 />
                                                 <label

@@ -15,6 +15,8 @@ class AuthService {
     try {
       const response = await this.axiosInstance.post('/login', { email, password });
       this.currentUser = response.data;
+      if(this.currentUser)
+        localStorage.setItem('user', JSON.stringify(response.data));
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -28,6 +30,8 @@ class AuthService {
     try {
       const response = await this.axiosInstance.post('/register', { name, email, password });
       this.currentUser = response.data;
+      if(this.currentUser)
+        localStorage.setItem('user', JSON.stringify(response.data));
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -39,6 +43,7 @@ class AuthService {
   
   logout(): void {
     this.currentUser = null;
+    localStorage.removeItem('user');
   }
   
   getCurrentUser(): User | null {
@@ -46,6 +51,10 @@ class AuthService {
   }
   
   isAuthenticated(): boolean {
+    const user = localStorage.getItem('user');
+    if(user) {
+      this.currentUser = JSON.parse(user);
+    }
     return this.currentUser !== null;
   }
   
