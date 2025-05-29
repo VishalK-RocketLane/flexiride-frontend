@@ -19,6 +19,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { authService } from "@/services/authService";
 import { vehicleService, VehicleFilterParams } from "@/services/vehicleService";
+import { bookingService } from "@/services/ bookingService";
 
 export default function VehiclesPage() {
     const router = useRouter();
@@ -28,11 +29,15 @@ export default function VehiclesPage() {
         endPrice: undefined,
         types: [],
         brands: [],
+        startDate: undefined,
+        endDate: undefined
     });
-    const [startDate, setStartDate] = useState<Date | undefined>(undefined);
-    const [endDate, setEndDate] = useState<Date | undefined>(undefined);
 
     const isAuthenticated = authService.isAuthenticated();
+    if(isAuthenticated && authService.getCurrentUser()?.role !== 'CUSTOMER') {
+      router.push('/admin');   
+    }
+
     // Extract unique brands
     const [brands, setBrands] = useState<string[]>([]);
     const types: VehicleType[] = ['bike', 'scooter', 'hatchback', 'sedan', 'suv', 'mpv'];
@@ -70,25 +75,47 @@ export default function VehiclesPage() {
             endPrice: undefined,
             types: [],
             brands: [],
+            startDate: undefined,
+            endDate: undefined
         });
-        setStartDate(undefined);
-        setEndDate(undefined);
         setFilteredVehicles([]);
     };
 
-    const handleBookNow = (vehicle: Vehicle) => {
+    const handleBookNow = async (vehicle: Vehicle) => {
         if (!isAuthenticated) {
             toast.error("Please log in to book a vehicle");
             router.push("/login");
             return;
         }
 
-        if (!startDate || !endDate) {
+        if (!filters.startDate || !filters.endDate) {
             toast.error("Please select start and end dates");
             return;
         }
 
-        toast.success(`Vehicle booked: ${vehicle.name}`);
+        if(filters.startDate > filters.endDate) {
+            toast.error("Start date must be before end date");
+            return;
+        }
+        
+        if(filters.startDate < new Date()) {
+            toast.error("Start date must be in the future");
+            return;
+        }
+
+        try {
+            await bookingService.createBooking({
+                email: authService.getCurrentUser()?.email || '',
+                vehicleId: vehicle.id,
+                startDate: filters.startDate.toISOString().split('T')[0],
+                endDate: filters.endDate.toISOString().split('T')[0],
+            });
+            fetchVehicles();
+            toast.success('Booking made successfully');
+        } catch (error: any) {
+            toast.error(error?.message);
+            console.error(error);
+        }
     };
 
     return (
@@ -143,14 +170,14 @@ export default function VehiclesPage() {
                                                     variant="outline"
                                                     className="w-full justify-start text-left font-normal"
                                                 >
-                                                    {startDate ? format(startDate, "PPP") : "Start date"}
+                                                    {filters.startDate ? format(filters.startDate, "PPP") : "Start date"}
                                                 </Button>
                                             </PopoverTrigger>
                                             <PopoverContent className="w-auto p-0">
                                                 <Calendar
                                                     mode="single"
-                                                    selected={startDate}
-                                                    onSelect={setStartDate}
+                                                    selected={filters.startDate}
+                                                    onSelect={(event) => setFilters({...filters, startDate: event})}
                                                     initialFocus
                                                 />
                                             </PopoverContent>
@@ -161,14 +188,14 @@ export default function VehiclesPage() {
                                                     variant="outline"
                                                     className="w-full justify-start text-left font-normal"
                                                 >
-                                                    {endDate ? format(endDate, "PPP") : "End date"}
+                                                    {filters.endDate ? format(filters.endDate, "PPP") : "End date"}
                                                 </Button>
                                             </PopoverTrigger>
                                             <PopoverContent className="w-auto p-0">
                                                 <Calendar
                                                     mode="single"
-                                                    selected={endDate}
-                                                    onSelect={setEndDate}
+                                                    selected={filters.endDate}
+                                                    onSelect={(event) => setFilters({...filters, endDate: event})}
                                                     initialFocus
                                                 />
                                             </PopoverContent>
@@ -258,8 +285,8 @@ export default function VehiclesPage() {
                                         <VehicleCard
                                             vehicle={vehicle}
                                             onBookNow={() => handleBookNow(vehicle)}
-                                            startDate={startDate}
-                                            endDate={endDate}
+                                            startDate={filters.startDate}
+                                            endDate={filters.endDate}
                                         />
                                     </motion.div>
                                 ))}

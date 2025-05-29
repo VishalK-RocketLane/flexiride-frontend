@@ -1,5 +1,7 @@
+import { UUID } from "crypto";
+
 export interface Booking {
-    id: string;
+    id: UUID;
     userId: string;
     vehicleId: string;
     startDate: string;

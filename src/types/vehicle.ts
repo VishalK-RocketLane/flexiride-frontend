@@ -1,7 +1,9 @@
+import { UUID } from "node:crypto";
+
 export type VehicleType = 'scooter' | 'bike' | 'sedan' | 'hatchback' | 'suv' | 'mpv';
 
 export interface Vehicle {
-    id: string;
+    id: UUID;
     name: string;
     brand: string;
     model: string;
