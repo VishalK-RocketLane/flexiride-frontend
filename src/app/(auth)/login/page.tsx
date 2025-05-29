@@ -28,7 +28,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { authService } from "@/services/auth";
+import { authService } from "@/services/authService";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),

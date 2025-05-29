@@ -1,4 +1,4 @@
-export type VehicleType = '2-Wheeler' | '4-Wheeler';
+export type VehicleType = 'scooter' | 'bike' | 'sedan' | 'hatchback' | 'suv' | 'mpv';
 
 export interface Vehicle {
     id: string;
@@ -15,7 +15,7 @@ export interface VehicleFilters {
     priceRange: [number, number];
     startDate?: Date;
     endDate?: Date;
-    vehicleTypes?: VehicleType[];
+    types?: VehicleType[];
     brands?: string[];
     model?: string;
 }
