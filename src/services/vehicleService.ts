@@ -2,6 +2,7 @@
 
 import axios from 'axios';
 import { Vehicle, VehicleUpdateDto } from '@/types/vehicle';
+import { UUID } from 'node:crypto';
 
 export interface VehicleFilterParams {
   brands?: string[];
@@ -34,6 +35,18 @@ class VehicleService {
     }
   }
 
+  async getVehicleById(id: string): Promise<Vehicle> {
+    try {
+        const response = await this.axiosInstance.get(`/vehicles/${id}`);
+        return response.data;
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          throw new Error(error.response?.data?.message || 'Failed to fetch vehicles');
+        }
+        throw new Error('Failed to fetch vehicles');
+      }
+  }
+
   async filterVehicles(filters: VehicleFilterParams): Promise<Vehicle[]> {
     try {
       const response = await this.axiosInstance.post('/vehicles/filter', {
@@ -57,6 +70,19 @@ class VehicleService {
   async createVehicle(vehicleUpdateDto: VehicleUpdateDto): Promise<Vehicle> {
     try {
       const response = await this.axiosInstance.post('/vehicles/create', vehicleUpdateDto);
+      return response.data;
+    }
+    catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data?.message || 'Failed to create vehicle');
+      }
+      throw new Error('Failed to create vehicle');
+    }
+  }
+
+  async updateVehicle(id:UUID, vehicleUpdateDto: VehicleUpdateDto): Promise<Vehicle> {
+    try {
+      const response = await this.axiosInstance.post(`/vehicles/${id}`, vehicleUpdateDto);
       return response.data;
     }
     catch (error) {

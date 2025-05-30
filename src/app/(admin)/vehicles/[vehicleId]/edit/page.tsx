@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { z } from "zod";
@@ -31,6 +31,7 @@ import {
 import { authService } from "@/services/authService";
 import { Vehicle, VehicleType } from "@/types/vehicle";
 import { vehicleService } from "@/services/vehicleService";
+import { UUID } from "node:crypto";
 
 const vehicleSchema = z.object({
   brand: z.string().min(1, { message: "Brand is required" }),
@@ -42,10 +43,12 @@ const vehicleSchema = z.object({
 
 type VehicleFormValues = z.infer<typeof vehicleSchema>;
 
-export default function AddVehiclePage() {
+export default function EditVehiclePage() {
+  const vehicleId = useParams().vehicleId as UUID;
   const router = useRouter();
   const isAuthenticated = authService.isAuthenticated();
   const currentUser = authService.getCurrentUser();
+  const [vehicle, setVehicle] = useState<Vehicle | null>(null);
 
   useEffect(() => {
     // Check if user is authenticated and is an admin
@@ -60,22 +63,43 @@ export default function AddVehiclePage() {
       router.push("/vehicles");
       return;
     }
-  }, [isAuthenticated, currentUser, router]);
+
+    const fetchVehicle = async () => {
+      try {
+        const response = await vehicleService.getVehicleById(vehicleId);
+        setVehicle(response);
+        form.reset({
+          brand: response.brand,
+          model: response.model,
+          type: response.type,
+          pricePerDay: response.pricePerDay,
+          imageUrl: response.imageUrl,
+        });
+      }
+      catch(error) {
+        toast.error("Failed to fetch vehicle");
+        router.push("/vehicles");
+      }
+    };
+    fetchVehicle();
+
+  }, []);
   
   const form = useForm<VehicleFormValues>({
     resolver: zodResolver(vehicleSchema),
     defaultValues: {
-      brand: "",
-      model: "",
-      type: "bike",
-      pricePerDay: 50,
-      imageUrl: ""
+      brand: vehicle?.brand,
+      model: vehicle?.model,
+      type: vehicle?.type as VehicleType,
+      pricePerDay: vehicle?.pricePerDay,
+      imageUrl: vehicle?.imageUrl,
     },
   });
   
   const onSubmit = async (data: VehicleFormValues) => {
     try {
-        await vehicleService.createVehicle(data);
+        if(!vehicle) return;
+        await vehicleService.updateVehicle(vehicle.id, data);
         toast.success("Vehicle added successfully");
         router.push("/vehicles");
     }
@@ -87,7 +111,7 @@ export default function AddVehiclePage() {
     }
     
   };
-  
+  if(!vehicle) return null;
   return (
     <div className="container mx-auto">
       <motion.div
@@ -120,7 +144,7 @@ export default function AddVehiclePage() {
                           <FormItem>
                             <FormLabel>Brand</FormLabel>
                             <FormControl>
-                              <Input placeholder="e.g., Honda" {...field} />
+                              <Input placeholder={vehicle.brand} {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -134,7 +158,7 @@ export default function AddVehiclePage() {
                           <FormItem>
                             <FormLabel>Model</FormLabel>
                             <FormControl>
-                              <Input placeholder="e.g., Civic" {...field} />
+                              <Input placeholder={vehicle.model} {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -155,7 +179,7 @@ export default function AddVehiclePage() {
                             >
                               <FormControl>
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Select type" />
+                                  <SelectValue placeholder={vehicle.type} />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
@@ -181,7 +205,7 @@ export default function AddVehiclePage() {
                           <FormItem>
                             <FormLabel>Daily Rate Rs.</FormLabel>
                             <FormControl>
-                              <Input type="number" step="50" {...field} />
+                              <Input type="number" step="50" {...field} placeholder={`${vehicle.pricePerDay}`}/>
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -199,7 +223,7 @@ export default function AddVehiclePage() {
                           <FormLabel>Image URL</FormLabel>
                           <FormControl>
                             <div className="flex gap-2">
-                              <Input placeholder="https://example.com/image.jpg" {...field} />
+                              <Input placeholder={vehicle.imageUrl} {...field} />
                             </div>
                           </FormControl>
                           <FormMessage />

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { User, UserRole } from '@/types/user';
+import {useState, useEffect} from 'react';
 
 class AuthService {
   private currentUser: User | null = null;
