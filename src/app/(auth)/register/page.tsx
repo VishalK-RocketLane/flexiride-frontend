@@ -60,10 +60,10 @@ export default function RegisterPage() {
     setIsLoading(true);
     
     try {
-    //   await authService.register(data.name, data.email, data.password);
+      await authService.register(data.name, data.email, data.password);
       
-    //   toast.success("Account created successfully!");
-    //   router.push("/vehicles");
+      toast.success("Account created successfully!");
+      router.push("/browse-vehicles");
     } catch (error) {
       toast.error("Registration failed. Please try again.");
     } finally {

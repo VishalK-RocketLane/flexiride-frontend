@@ -120,9 +120,6 @@ export default function MyBookingsPage() {
             <div className="flex flex-col gap-6">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">My Bookings</h1>
-                    <p className="text-muted-foreground">
-                        Manage your active rentals and return requests
-                    </p>
                 </div>
 
                 <Tabs defaultValue="active" className="w-full">
@@ -183,7 +180,7 @@ export default function MyBookingsPage() {
                                 <p className="text-muted-foreground mb-4">
                                     You don't have any active vehicle rentals at the moment
                                 </p>
-                                <Button onClick={() => router.push("/vehicles")}>
+                                <Button onClick={() => router.push("/browse-vehicles")}>
                                     Browse Vehicles
                                 </Button>
                             </div>

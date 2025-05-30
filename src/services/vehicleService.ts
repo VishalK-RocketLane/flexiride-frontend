@@ -1,7 +1,7 @@
 "use client";
 
 import axios from 'axios';
-import { Vehicle, VehicleType } from '@/types/vehicle';
+import { Vehicle, VehicleUpdateDto } from '@/types/vehicle';
 
 export interface VehicleFilterParams {
   brands?: string[];
@@ -51,6 +51,19 @@ class VehicleService {
         throw new Error(error.response?.data?.message || 'Failed to filter vehicles');
       }
       throw new Error('Failed to filter vehicles');
+    }
+  }
+
+  async createVehicle(vehicleUpdateDto: VehicleUpdateDto): Promise<Vehicle> {
+    try {
+      const response = await this.axiosInstance.post('/vehicles/create', vehicleUpdateDto);
+      return response.data;
+    }
+    catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data?.message || 'Failed to create vehicle');
+      }
+      throw new Error('Failed to create vehicle');
     }
   }
 }

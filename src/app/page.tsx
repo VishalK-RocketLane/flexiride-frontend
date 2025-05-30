@@ -39,7 +39,7 @@ export default function Home() {
         <section className="mt-10 flex flex-col sm:flex-row gap-4">
           <Button
             size="lg"
-            onClick={() => router.push('/vehicles')}
+            onClick={() => router.push('/browse-vehicles')}
             className="min-w-[220px] text-base"
           >
             <Car className="mr-2 h-5 w-5" />

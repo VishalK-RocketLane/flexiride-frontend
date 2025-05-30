@@ -31,12 +31,26 @@ export function MainNav() {
         <nav className="hidden md:flex items-center gap-6 text-sm font-medium flex-1">
           {isAuthenticated && (
             <>
-              <Link href="/vehicles" className="transition-colors hover:text-foreground/80">
-                Browse Vehicles
-              </Link>
-              <Link href="/my-bookings" className="transition-colors hover:text-foreground/80">
-                My Bookings
-              </Link>
+              {authService.getCurrentUser()?.role === "CUSTOMER" &&
+                <>
+                    <Link href="/browse-vehicles" className="transition-colors hover:text-foreground/80">
+                        Browse Vehicles
+                    </Link>
+                    <Link href="/my-bookings" className="transition-colors hover:text-foreground/80">
+                        My Bookings
+                    </Link>
+                </>
+              }
+              {authService.getCurrentUser()?.role === "ADMIN" &&
+                <>
+                    <Link href="/vehicles" className="transition-colors hover:text-foreground/80">
+                        View Vehicles
+                    </Link>
+                    <Link href="/bookings" className="transition-colors hover:text-foreground/80">
+                        All Bookings
+                    </Link>
+                </>
+              }
             </>
           )}
         </nav>

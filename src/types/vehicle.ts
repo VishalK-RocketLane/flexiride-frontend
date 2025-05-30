@@ -4,7 +4,6 @@ export type VehicleType = 'scooter' | 'bike' | 'sedan' | 'hatchback' | 'suv' | '
 
 export interface Vehicle {
     id: UUID;
-    name: string;
     brand: string;
     model: string;
     type: VehicleType;
@@ -19,4 +18,12 @@ export interface VehicleFilters {
     types?: VehicleType[];
     brands?: string[];
     model?: string;
+}
+
+export interface VehicleUpdateDto {
+    brand: string;
+    model: string;
+    type: VehicleType;
+    pricePerDay: number;
+    imageUrl: string;
 }

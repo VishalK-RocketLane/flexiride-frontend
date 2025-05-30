@@ -59,9 +59,9 @@ export default function LoginPage() {
       
       // Redirect based on user role
       if (user.role === "ADMIN") {
-        router.push("/admin/dashboard");
-      } else {
         router.push("/vehicles");
+      } else {
+        router.push("/browse-vehicles");
       }
     } catch (error) {
       toast.error("Invalid email or password");
