@@ -61,16 +61,6 @@ export default function AddVehiclePage() {
       router.push("/vehicles");
       return;
     }
-
-    const fetchVehicles = async () => {
-      try {
-        const response = await vehicleService.getAllVehicles();
-        setVehicles(response);
-      }
-      catch (error) {
-        toast.error("Failed to fetch vehicles");
-      }
-    }
   }, [isAuthenticated, currentUser, router]);
   
   const form = useForm<VehicleFormValues>({
@@ -113,14 +103,11 @@ export default function AddVehiclePage() {
           </Button>
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Add New Vehicle</h1>
-            <p className="text-muted-foreground">
-              Add a new vehicle to your inventory
-            </p>
           </div>
         </div>
         
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-6 mt-4">
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -173,8 +160,12 @@ export default function AddVehiclePage() {
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value="2-Wheeler">2-Wheeler</SelectItem>
-                                <SelectItem value="4-Wheeler">4-Wheeler</SelectItem>
+                                <SelectItem value="bike">bike</SelectItem>
+                                <SelectItem value="scooter">scooter</SelectItem>
+                                <SelectItem value="hatchback">hatchback</SelectItem>
+                                <SelectItem value="sedan">sedan</SelectItem>
+                                <SelectItem value="suv">suv</SelectItem>
+                                <SelectItem value="mpv">mpv</SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -189,9 +180,9 @@ export default function AddVehiclePage() {
                         name="pricePerDay"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Daily Rate ($)</FormLabel>
+                            <FormLabel>Daily Rate Rs.</FormLabel>
                             <FormControl>
-                              <Input type="number" step="0.01" {...field} />
+                              <Input type="number" step="50" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -210,14 +201,8 @@ export default function AddVehiclePage() {
                           <FormControl>
                             <div className="flex gap-2">
                               <Input placeholder="https://example.com/image.jpg" {...field} />
-                              <Button type="button" variant="outline" size="icon">
-                                <ImagePlus className="h-4 w-4" />
-                              </Button>
                             </div>
                           </FormControl>
-                          <FormDescription>
-                            Enter a URL for the vehicle image
-                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}

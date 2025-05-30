@@ -290,11 +290,8 @@ function BookingCard({ booking, vehicle, type, onCancel }: BookingCardProps) {
             </div>
             <CardHeader className="pb-2">
                 <div className="flex justify-between items-start">
-                    <CardTitle className="text-xl">{vehicle.name}</CardTitle>
+                    <CardTitle className="text-xl">{vehicle.brand} {vehicle.model}</CardTitle>
                 </div>
-                <CardDescription>
-                    {vehicle.brand} {vehicle.model}
-                </CardDescription>
             </CardHeader>
             <CardContent className="flex-grow">
                 <div className="space-y-3">

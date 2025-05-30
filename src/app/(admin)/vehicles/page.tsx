@@ -109,7 +109,7 @@ export default function AdminVehiclesPage() {
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Vehicle Inventory</h1>
           </div>
-          <Button onClick={() => router.push("/admin/vehicles/add")}>
+          <Button onClick={() => router.push("/vehicles/add")}>
             <PlusCircle className="mr-2 h-4 w-4" />
             Add Vehicle
           </Button>
@@ -156,7 +156,6 @@ export default function AdminVehiclesPage() {
                           />
                         </div>
                         <div>
-                          <div className="font-medium">{vehicle.name}</div>
                           <div className="text-sm text-muted-foreground">{vehicle.brand} {vehicle.model}</div>
                         </div>
                       </div>
