@@ -26,7 +26,7 @@ import { UUID } from "crypto";
 import { bookingService } from "@/services/ bookingService";
 import { vehicleService } from "@/services/vehicleService";
 
-export default function MyBookingsPage() {
+export default function BookingsPage() {
     const router = useRouter();
     const isAuthenticated = authService.isAuthenticated();
     const currentUser = authService.getCurrentUser();
@@ -35,8 +35,8 @@ export default function MyBookingsPage() {
         router.push("/login");
         return;
     }
-    else if(currentUser.role === "ADMIN") {
-        router.push("/vehicles");
+    else if(currentUser.role === "CUSTOMER") {
+        router.push("/browse-vehicles");
         return;
     }
 
@@ -49,8 +49,7 @@ export default function MyBookingsPage() {
     useEffect(() => {
         const fetchBookings = async () => {
             try {
-                const bookings = await bookingService.getBookingsByEmail(currentUser.email);
-                console.log(bookings);
+                const bookings = await bookingService.getAllBookings();
                 setBookings(bookings);
             }
             catch (error) {
@@ -120,7 +119,7 @@ export default function MyBookingsPage() {
         <div className="container mx-auto">
             <div className="flex flex-col gap-6">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">My Bookings</h1>
+                    <h1 className="text-3xl font-bold tracking-tight">All Bookings</h1>
                 </div>
 
                 <Tabs defaultValue="active" className="w-full">
@@ -181,9 +180,6 @@ export default function MyBookingsPage() {
                                 <p className="text-muted-foreground mb-4">
                                     You don't have any active vehicle rentals at the moment
                                 </p>
-                                <Button onClick={() => router.push("/browse-vehicles")}>
-                                    Browse Vehicles
-                                </Button>
                             </div>
                         )}
                     </TabsContent>
@@ -304,18 +300,12 @@ function BookingCard({ booking, vehicle, type, onCancel }: BookingCardProps) {
                         <span className="text-muted-foreground">End Date:</span>
                         <span className="font-medium">{formatDate(booking.endDate)}</span>
                     </div>
+                    <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Customer Id:</span>
+                        <span className="font-medium">{'...' + booking.customerId.substring(25)}</span>
+                    </div>
                 </div>
             </CardContent>
-            {type === "ACTIVE" &&
-                <CardFooter>
-                    <Button
-                        className="w-full"
-                        onClick={() => {if(onCancel) onCancel(booking)}}
-                    >
-                        Cancel Booking
-                    </Button>
-                </CardFooter>
-            }
         </Card>
     );
 }

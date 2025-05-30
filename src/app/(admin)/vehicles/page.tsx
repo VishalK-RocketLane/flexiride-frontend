@@ -37,24 +37,24 @@ export default function AdminVehiclesPage() {
   const router = useRouter();
   const isAuthenticated = authService.isAuthenticated();
   const currentUser = authService.getCurrentUser();
+
+  if (!isAuthenticated) {
+    toast.error("Please login to access the admin dashboard");
+    router.push("/login");
+    return;
+  }
   
+  if (currentUser?.role !== "ADMIN") {
+    toast.error("You don't have permission to access the admin dashboard");
+    router.push("/browse-vehicles");
+    return;
+  }
+
   const [allVehicles, setAllVehicles] = useState<Vehicle[]>([]);
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    // Check if user is authenticated and is an admin
-    if (!isAuthenticated) {
-      toast.error("Please login to access the admin dashboard");
-      router.push("/login");
-      return;
-    }
-    
-    if (currentUser?.role !== "ADMIN") {
-      toast.error("You don't have permission to access the admin dashboard");
-      router.push("/vehicles");
-      return;
-    }
 
     const fetchVehicles = async () => {
       try {

@@ -34,8 +34,8 @@ export default function VehiclesPage() {
     });
 
     const isAuthenticated = authService.isAuthenticated();
-    if(isAuthenticated && authService.getCurrentUser()?.role !== 'CUSTOMER') {
-      router.push('/admin');   
+    if(isAuthenticated && authService.getCurrentUser()?.role === 'ADMIN') {
+      router.push('/vehicles');   
     }
 
     // Extract unique brands

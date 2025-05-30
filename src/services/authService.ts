@@ -40,10 +40,10 @@ class AuthService {
         email,
         password,
       });
-      this.currentUser = response.data;
+      this.currentUser = {...response.data, role: 'CUSTOMER'};
       if (this.isBrowser() && this.currentUser)
-        localStorage.setItem("user", JSON.stringify(response.data));
-      return response.data;
+        localStorage.setItem("user", JSON.stringify(this.currentUser));
+      return this.currentUser?? response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new Error(error.response?.data?.message || "Registration failed");
