@@ -100,11 +100,11 @@ export default function EditVehiclePage() {
     try {
         if(!vehicle) return;
         await vehicleService.updateVehicle(vehicle.id, data);
-        toast.success("Vehicle added successfully");
+        toast.success("Vehicle updated successfully");
         router.push("/vehicles");
     }
     catch(error) {
-      toast.error("Failed to add vehicle");
+      toast.error("Failed to update vehicle");
     }
     finally {
       form.reset();
@@ -125,7 +125,7 @@ export default function EditVehiclePage() {
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Add New Vehicle</h1>
+            <h1 className="text-3xl font-bold tracking-tight">Edit Vehicle</h1>
           </div>
         </div>
         

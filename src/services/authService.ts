@@ -4,7 +4,7 @@ import { productionService } from "./productionService";
 
 class AuthService {
   private currentUser: User | null = null;
-  private readonly baseUrl = productionService.getIsProduction()? 'https://flexiride-backend.onrender.com/auth' : "http://localhost:8080/auth";
+  private readonly baseUrl = productionService.getIsProduction()? 'https://flexiride-backend-api.onrender.com/auth' : "http://localhost:8080/auth";
   private readonly axiosInstance = axios.create({
     baseURL: this.baseUrl,
     headers: {

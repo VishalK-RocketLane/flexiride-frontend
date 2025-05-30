@@ -50,7 +50,6 @@ export default function MyBookingsPage() {
         const fetchBookings = async () => {
             try {
                 const bookings = await bookingService.getBookingsByEmail(currentUser.email);
-                console.log(bookings);
                 setBookings(bookings);
             }
             catch (error) {

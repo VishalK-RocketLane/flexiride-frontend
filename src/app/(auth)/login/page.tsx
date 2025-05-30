@@ -55,13 +55,17 @@ export default function LoginPage() {
     try {
       const user = await authService.login(data.email, data.password);
       
-      toast.success("Logged in successfully!");
       
       // Redirect based on user role
       if (user.role === "ADMIN") {
         router.push("/vehicles");
-      } else {
+        toast.success("Logged in successfully!");
+      } else if(user.role === "CUSTOMER") {
         router.push("/browse-vehicles");
+        toast.success("Logged in successfully!");
+      } else {
+        router.push("/login");
+        toast.error("Invalid email or password");
       }
     } catch (error) {
       toast.error("Invalid email or password");

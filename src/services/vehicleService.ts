@@ -16,7 +16,7 @@ export interface VehicleFilterParams {
 }
 
 class VehicleService {
-  private readonly baseUrl = productionService.getIsProduction()? 'https://flexiride-backend.onrender.com/api' : 'http://localhost:8080/api';
+  private readonly baseUrl = productionService.getIsProduction()? 'https://flexiride-backend-api.onrender.com/api' : 'http://localhost:8080/api';
   private readonly axiosInstance = axios.create({
     baseURL: this.baseUrl,
     headers: {
