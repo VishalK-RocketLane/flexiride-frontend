@@ -2,6 +2,7 @@ import axios from 'axios';
 import { Booking } from '@/types/booking';
 import { UUID } from 'node:crypto';
 import { authService } from './authService';
+import { productionService } from './productionService';
 
 export interface BookingMakeDto {
     email: string;
@@ -11,7 +12,7 @@ export interface BookingMakeDto {
 }
 
 class BookingService {
-    private readonly baseUrl = 'http://localhost:8080/api';
+    private readonly baseUrl = productionService.getIsProduction()? 'https://flexiride-backend.onrender.com/api' : "http://localhost:8080/api";
     private readonly axiosInstance = axios.create({
         baseURL: this.baseUrl,
         headers: {

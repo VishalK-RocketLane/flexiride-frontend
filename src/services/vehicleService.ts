@@ -3,6 +3,7 @@
 import axios from 'axios';
 import { Vehicle, VehicleUpdateDto } from '@/types/vehicle';
 import { UUID } from 'node:crypto';
+import { productionService } from './productionService';
 
 export interface VehicleFilterParams {
   brands?: string[];
@@ -15,7 +16,7 @@ export interface VehicleFilterParams {
 }
 
 class VehicleService {
-  private readonly baseUrl = 'http://localhost:8080/api';
+  private readonly baseUrl = productionService.getIsProduction()? 'https://flexiride-backend.onrender.com/api' : 'http://localhost:8080/api';
   private readonly axiosInstance = axios.create({
     baseURL: this.baseUrl,
     headers: {
