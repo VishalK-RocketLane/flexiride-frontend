@@ -92,6 +92,19 @@ class VehicleService {
       throw new Error('Failed to create vehicle');
     }
   }
+
+  async deleteVehicle(id:UUID): Promise<Vehicle> {
+    try {
+      const response = await this.axiosInstance.delete(`/vehicles/${id}`);
+      return response.data;
+    }
+    catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data?.message || 'Failed to create vehicle');
+      }
+      throw new Error('Failed to create vehicle');
+    }
+  }
 }
 
 export const vehicleService = new VehicleService();

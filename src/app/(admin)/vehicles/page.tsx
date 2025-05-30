@@ -31,6 +31,7 @@ import { authService } from "@/services/authService";
 import { Badge } from "@/components/ui/badge";
 import { vehicleService } from "@/services/vehicleService";
 import Fuse from "fuse.js";
+import { UUID } from "crypto";
 
 export default function AdminVehiclesPage() {
   const router = useRouter();
@@ -94,12 +95,18 @@ export default function AdminVehiclesPage() {
     router.push(`/vehicles/${vehicleId}/edit`);
   };
   
-  const handleDelete = (vehicleId: string) => {
-    // In a real app, this would call an API to delete the vehicle
-    const updatedVehicles = allVehicles.filter((vehicle) => vehicle.id !== vehicleId);
-    setAllVehicles(updatedVehicles);
+  const handleDelete = async (vehicleId: UUID) => {
+    try{
+        await vehicleService.deleteVehicle(vehicleId);
+        const updatedVehicles = allVehicles.filter((vehicle) => vehicle.id !== vehicleId);
+        setAllVehicles(updatedVehicles);
+        toast.success("Vehicle deleted successfully");
+    }
+    catch(error) {
+        toast.error("Failed to delete vehicle");
+        return;
+    }
     
-    toast.success("Vehicle deleted successfully");
   };
   
   return (
