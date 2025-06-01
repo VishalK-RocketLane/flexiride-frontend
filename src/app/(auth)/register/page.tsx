@@ -60,7 +60,7 @@ export default function RegisterPage() {
     setIsLoading(true);
     
     try {
-      await authService.register(data.name, data.email, data.password);
+      await authService.register(data.name, data.email.toLowerCase(), data.password);
       
       toast.success("Account created successfully!");
       router.push("/browse-vehicles");

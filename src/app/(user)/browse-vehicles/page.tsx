@@ -19,7 +19,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { authService } from "@/services/authService";
 import { vehicleService, VehicleFilterParams } from "@/services/vehicleService";
-import { bookingService } from "@/services/ bookingService";
+import { bookingService } from "@/services/bookingService";
 
 export default function VehiclesPage() {
     const router = useRouter();

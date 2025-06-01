@@ -23,6 +23,7 @@ class AuthService {
         password,
       });
       this.currentUser = response.data;
+
       if (this.isBrowser() && this.currentUser)
         localStorage.setItem("user", JSON.stringify(response.data));
       return response.data;
@@ -41,7 +42,7 @@ class AuthService {
         email,
         password,
       });
-      this.currentUser = {...response.data, role: 'CUSTOMER'};
+      this.currentUser = response.data;
       if (this.isBrowser() && this.currentUser)
         localStorage.setItem("user", JSON.stringify(this.currentUser));
       return this.currentUser?? response.data;
@@ -55,13 +56,12 @@ class AuthService {
 
   logout(): void {
     this.currentUser = null;
-    if (this.isBrowser()) {
-      localStorage.removeItem("user");
-    }
+    localStorage.removeItem("user");
+    
   }
 
   getCurrentUser(): User | null {
-    if (!this.currentUser && this.isBrowser()) {
+    if (!this.currentUser) {
       const user = localStorage.getItem("user");
       if (user) {
         this.currentUser = JSON.parse(user);
@@ -71,7 +71,7 @@ class AuthService {
   }
 
   isAuthenticated(): boolean {
-    if (!this.currentUser && this.isBrowser()) {
+    if (!this.currentUser) {
       const user = localStorage.getItem("user");
       if (user) {
         this.currentUser = JSON.parse(user);

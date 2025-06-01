@@ -28,7 +28,7 @@ interface VehicleCardProps {
 export function VehicleCard({ vehicle, onBookNow, startDate, endDate }: VehicleCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   
-  const numDays = startDate && endDate ? calculateDateDifference(startDate, endDate) : 1;
+  const numDays = startDate && endDate ? calculateDateDifference(startDate, endDate) + 1 : 1;
   const totalPrice = vehicle.pricePerDay * numDays;
 
   return (

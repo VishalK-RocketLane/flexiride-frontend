@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Vehicle, VehicleUpdateDto } from '@/types/vehicle';
 import { UUID } from 'node:crypto';
 import { productionService } from './productionService';
+import { authService } from './authService';
 
 export interface VehicleFilterParams {
   brands?: string[];
@@ -16,14 +17,26 @@ export interface VehicleFilterParams {
 }
 
 class VehicleService {
-  private readonly baseUrl = productionService.getIsProduction()? 'https://flexiride-backend-api.onrender.com/api' : 'http://localhost:8080/api';
-  private readonly axiosInstance = axios.create({
-    baseURL: this.baseUrl,
-    headers: {
-      'Content-Type': 'application/json'
+  private readonly baseUrl = productionService.getIsProduction() ? 'https://flexiride-backend-api.onrender.com/api' : 'http://localhost:8080/api';
+  private readonly axiosInstance;
+
+  constructor() {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    const user = authService.getCurrentUser();
+
+    if (user) {
+      headers['Authorization'] = `Bearer ${user.token}`;
     }
-  });
-  
+
+    this.axiosInstance = axios.create({
+      baseURL: this.baseUrl,
+      headers: headers
+    });
+  }
+
   async getAllVehicles(): Promise<Vehicle[]> {
     try {
       const response = await this.axiosInstance.get('/vehicles');
@@ -38,14 +51,14 @@ class VehicleService {
 
   async getVehicleById(id: string): Promise<Vehicle> {
     try {
-        const response = await this.axiosInstance.get(`/vehicles/${id}`);
-        return response.data;
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          throw new Error(error.response?.data?.message || 'Failed to fetch vehicles');
-        }
-        throw new Error('Failed to fetch vehicles');
+      const response = await this.axiosInstance.get(`/vehicles/${id}`);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data?.message || 'Failed to fetch vehicles');
       }
+      throw new Error('Failed to fetch vehicles');
+    }
   }
 
   async filterVehicles(filters: VehicleFilterParams): Promise<Vehicle[]> {
@@ -81,9 +94,9 @@ class VehicleService {
     }
   }
 
-  async updateVehicle(id:UUID, vehicleUpdateDto: VehicleUpdateDto): Promise<Vehicle> {
+  async updateVehicle(id: UUID, vehicleUpdateDto: VehicleUpdateDto): Promise<Vehicle> {
     try {
-      const response = await this.axiosInstance.post(`/vehicles/${id}`, vehicleUpdateDto);
+      const response = await this.axiosInstance.post(`/vehicles/edit/${id}`, vehicleUpdateDto);
       return response.data;
     }
     catch (error) {
@@ -94,9 +107,9 @@ class VehicleService {
     }
   }
 
-  async deleteVehicle(id:UUID): Promise<Vehicle> {
+  async deleteVehicle(id: UUID): Promise<Vehicle> {
     try {
-      const response = await this.axiosInstance.delete(`/vehicles/${id}`);
+      const response = await this.axiosInstance.delete(`/vehicles/delete/${id}`);
       return response.data;
     }
     catch (error) {

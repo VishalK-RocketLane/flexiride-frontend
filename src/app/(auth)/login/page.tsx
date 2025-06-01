@@ -53,8 +53,7 @@ export default function LoginPage() {
     setIsLoading(true);
     
     try {
-      const user = await authService.login(data.email, data.password);
-      
+      const user = await authService.login(data.email.toLowerCase(), data.password);
       
       // Redirect based on user role
       if (user.role === "ADMIN") {
@@ -133,11 +132,6 @@ export default function LoginPage() {
             <Link href="/register" className="text-primary hover:underline">
               Register
             </Link>
-          </div>
-          <div className="text-xs text-center text-muted-foreground">
-            <p>Demo accounts:</p>
-            <p>Customer: user@gmail.com / password</p>
-            <p>Admin: admin@gmail.com / password</p>
           </div>
         </CardFooter>
       </Card>

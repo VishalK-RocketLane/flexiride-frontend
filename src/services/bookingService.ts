@@ -3,6 +3,7 @@ import { Booking } from '@/types/booking';
 import { UUID } from 'node:crypto';
 import { authService } from './authService';
 import { productionService } from './productionService';
+import { User } from '@/types/user';
 
 export interface BookingMakeDto {
     email: string;
@@ -12,13 +13,26 @@ export interface BookingMakeDto {
 }
 
 class BookingService {
-    private readonly baseUrl = productionService.getIsProduction()? 'https://flexiride-backend-api.onrender.com/api' : "http://localhost:8080/api";
-    private readonly axiosInstance = axios.create({
-        baseURL: this.baseUrl,
-        headers: {
-            'Content-Type': 'application/json'
+    private readonly baseUrl = productionService.getIsProduction() ? 'https://flexiride-backend-api.onrender.com/api' : "http://localhost:8080/api";
+
+    private readonly axiosInstance;
+
+    constructor() {
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+        };
+
+        const user = authService.getCurrentUser();
+        
+        if (user) {
+            headers['Authorization'] = `Bearer ${user.token}`;
         }
-    });
+        
+        this.axiosInstance = axios.create({
+            baseURL: this.baseUrl,
+            headers: headers
+        });
+    }
 
     async getAllBookings(): Promise<Booking[]> {
         try {

@@ -4,10 +4,17 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Car, LogIn } from 'lucide-react';
 import Link from 'next/link';
+import { authService } from '@/services/authService';
 
 export default function Home() {
   const router = useRouter();
-
+  if(authService.getCurrentUser() !== null){
+    if(authService.getCurrentUser()?.role === 'ADMIN')
+      router.push('/vehicles');
+    else if(authService.getCurrentUser()?.role === 'CUSTOMER')
+      router.push('/browse-vehicles');
+  }
+  
   return (
     <div className="h-screen">
       <header className="border-b border-border py-4 px-6 w-full">

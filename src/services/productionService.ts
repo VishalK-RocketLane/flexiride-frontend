@@ -9,4 +9,4 @@ class ProductionService {
     }
 }
 
-export const productionService = new ProductionService(true);
+export const productionService = new ProductionService(false);

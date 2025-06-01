@@ -23,7 +23,7 @@ import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { UUID } from "crypto";
-import { bookingService } from "@/services/ bookingService";
+import { bookingService } from "@/services/bookingService";
 import { vehicleService } from "@/services/vehicleService";
 
 export default function BookingsPage() {
