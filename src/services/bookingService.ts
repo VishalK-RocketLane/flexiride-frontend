@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import { Booking } from '@/types/booking';
 import { UUID } from 'node:crypto';
 import { authService } from './authService';
@@ -15,9 +15,11 @@ export interface BookingMakeDto {
 class BookingService {
     private readonly baseUrl = productionService.getIsProduction() ? 'https://flexiride-backend-api.onrender.com/api' : "http://localhost:8080/api";
 
-    private readonly axiosInstance;
+    private axiosInstance: AxiosInstance = axios.create({
+        baseURL: this.baseUrl
+    });
 
-    constructor() {
+    refreshHeaders(): void {
         const headers: Record<string, string> = {
             'Content-Type': 'application/json',
         };
@@ -35,6 +37,7 @@ class BookingService {
     }
 
     async getAllBookings(): Promise<Booking[]> {
+        this.refreshHeaders();
         try {
             const response = await this.axiosInstance.get('/bookings');
             return response.data;
@@ -47,6 +50,7 @@ class BookingService {
     }
 
     async getBookingsByEmail(email: string): Promise<Booking[]> {
+        this.refreshHeaders();
         try {
             const response = await this.axiosInstance.get(`/bookings/email/${email}`);
             return response.data;
@@ -59,6 +63,7 @@ class BookingService {
     }
 
     async createBooking(bookingMakeDto: BookingMakeDto): Promise<Booking> {
+        this.refreshHeaders();
         try {
             const response = await this.axiosInstance.post('/bookings/create', {
                 ...bookingMakeDto
@@ -73,6 +78,7 @@ class BookingService {
     }
 
     async cancelBooking(id: UUID): Promise<Booking> {
+        this.refreshHeaders();
         try {
             const response = await this.axiosInstance.post(`/bookings/cancel/${id}`);
             return response.data;

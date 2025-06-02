@@ -12,20 +12,17 @@ class AuthService {
     },
   });
 
-  private isBrowser(): boolean {
-    return typeof window !== "undefined";
-  }
-
   async login(email: string, password: string): Promise<User> {
     try {
+      localStorage.removeItem("user");
       const response = await this.axiosInstance.post("/login", {
         email,
         password,
       });
       this.currentUser = response.data;
 
-      if (this.isBrowser() && this.currentUser)
-        localStorage.setItem("user", JSON.stringify(response.data));
+      localStorage.setItem("user", JSON.stringify(response.data));
+      
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -37,15 +34,15 @@ class AuthService {
 
   async register(name: string, email: string, password: string): Promise<User> {
     try {
+      localStorage.removeItem("user");
       const response = await this.axiosInstance.post("/register", {
         name,
         email,
         password,
       });
       this.currentUser = response.data;
-      if (this.isBrowser() && this.currentUser)
-        localStorage.setItem("user", JSON.stringify(this.currentUser));
-      return this.currentUser?? response.data;
+      localStorage.setItem("user", JSON.stringify(this.currentUser));
+      return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new Error(error.response?.data?.message || "Registration failed");
@@ -57,7 +54,6 @@ class AuthService {
   logout(): void {
     this.currentUser = null;
     localStorage.removeItem("user");
-    
   }
 
   getCurrentUser(): User | null {

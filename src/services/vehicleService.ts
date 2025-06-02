@@ -18,9 +18,11 @@ export interface VehicleFilterParams {
 
 class VehicleService {
   private readonly baseUrl = productionService.getIsProduction() ? 'https://flexiride-backend-api.onrender.com/api' : 'http://localhost:8080/api';
-  private readonly axiosInstance;
+  private axiosInstance = axios.create({
+    baseURL: this.baseUrl
+  });
 
-  constructor() {
+  refreshHeaders(): void {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     };
@@ -38,6 +40,7 @@ class VehicleService {
   }
 
   async getAllVehicles(): Promise<Vehicle[]> {
+    this.refreshHeaders();
     try {
       const response = await this.axiosInstance.get('/vehicles');
       return response.data;
@@ -50,6 +53,7 @@ class VehicleService {
   }
 
   async getVehicleById(id: string): Promise<Vehicle> {
+    this.refreshHeaders();
     try {
       const response = await this.axiosInstance.get(`/vehicles/${id}`);
       return response.data;
@@ -62,6 +66,7 @@ class VehicleService {
   }
 
   async filterVehicles(filters: VehicleFilterParams): Promise<Vehicle[]> {
+    this.refreshHeaders();
     try {
       const response = await this.axiosInstance.post('/vehicles/filter', {
         brands: filters.brands || [],
@@ -82,6 +87,7 @@ class VehicleService {
   }
 
   async createVehicle(vehicleUpdateDto: VehicleUpdateDto): Promise<Vehicle> {
+    this.refreshHeaders();
     try {
       const response = await this.axiosInstance.post('/vehicles/create', vehicleUpdateDto);
       return response.data;
@@ -95,6 +101,7 @@ class VehicleService {
   }
 
   async updateVehicle(id: UUID, vehicleUpdateDto: VehicleUpdateDto): Promise<Vehicle> {
+    this.refreshHeaders();
     try {
       const response = await this.axiosInstance.post(`/vehicles/edit/${id}`, vehicleUpdateDto);
       return response.data;
@@ -108,6 +115,7 @@ class VehicleService {
   }
 
   async deleteVehicle(id: UUID): Promise<Vehicle> {
+    this.refreshHeaders();
     try {
       const response = await this.axiosInstance.delete(`/vehicles/delete/${id}`);
       return response.data;
